@@ -1,0 +1,37 @@
+(function (angular) {
+    var app = angular.module('promiseApp');
+    var snippets = [
+        {
+            name: 'Select a sample...',
+            desc: '',
+            snip: ''
+        },
+        {
+            name: 'Simple exception handling',
+            desc: "A simple visual example of the then/catch relationship.\nA Catch can be invoked by an ancestor only, a sibling will never trigger a catch.\n\nRun the example.\n\nOnce done, switch to \"Tree View\", you will see an origin Promise with id #0.\nNotice that it has 3 direct children which #0 will resolve to.\nAlso notice that #1 & #3 are \"Then\" promises and they both raised an exception.\n#4 is a \"Catch\" promise and a direct child of #3 (\"Then\"), since #3 raised an exception #4 handled it.\n#1 has no children, the exception fired by #1 is lost forever.\n#2 is a \"Catch\" promise, it is a sibling of 1 thus it will never catch an exception from one, what will it catch then?\nWell, #2 will catch a reject call from #0, simple.\n",
+            snip: "var promise = Promise.resolve(100);\n\npromise\n    .then(function(v) {\n        throw new Error(\"I am an error!\");\n    });\n\npromise\n    .catch(function(err) {\n        alert(\"I shall not pop up!\");\n    });\n\npromise.then(function(v) {\n        throw new Error(\"I am an error!\");\n    })\n    .catch(function(err) {\n\n    });\n\ncreatePromiseTree(400,null);\n"
+        },
+        {
+            name: 'Chained exception handling',
+            desc: "A visual example showing how promises work when an exception is raised\nin the middle of the chain, allowing the chain to recover and continue.\n\nThis example is a straight chain where once promise provides a value to the next.\nThe variable 'shouldIThrow' indicates if #2 should throw and excption or not.\n\nChande 'shouldIThrow' to false, Run the example.\nOnce done, switch to \"Tree View\", you will see an origin Promise with id #0.\n\nIf 'shouldIThrow' = false then the process is:\nGet a Value, multiply by 2, devide by 2, return it (should be the same as original value)\nNotice we are skipping #4, we never had an exception so we don't \"Catch\"...\n\n\nChande 'shouldIThrow' to true, Run the example.\nOnce done, switch to \"Tree View\", you will see an origin Promise with id #0.\n\nIf 'shouldIThrow' = true then an exception is raised in the middle, breaking\nup the process and returning the value -1.\nNotice that #2 is throwing an exception which cause a jump to the\nnext \"Catch\" in the chain (#4), we skip #3 here, it is never invoked.",
+            snip: "var promise = Promise.resolve(100);\n\nvar shouldIThrow = false;\n\npromise\n    .then(function(v) {\n        return v/2;\n    })\n    .then(function(v) {\n        if (shouldIThrow) throw new Error();\n        return v;\n    })\n    .then(function(v) {\n        return v * 2;\n    })\n    .catch(function(err) {\n        // handle it.\n        return -1;\n    })\n    .then(function(v) {\n        return v;\n    });\n\n\ncreatePromiseTree(0,null);"
+        },
+        {
+            name: 'Scoped promises.',
+            desc: "A visual example of \"Promise.all\".\n\nPromise.all is a great example of what PromsieTree defines as \"ZonePromise\", a promise that runs under the scope of\nanother promise.\n\nThe logic is simple, a function called 'createPromise' returns a promise that will resolve a supplied value after a a supplied time.\nWe create an array of 4 promises resolving different values in different times.\n\nNotice #13 is a chained promise to #4 \"Promise.all\" but all the \"ZonePromise\" nodes are not chained.\nThey run under the scope of #4 and the logic #4 implements is to collect the values of all of them and resolve once they are all resolved.\n#13 simply add up all the value return, which should yield 50.\n\nThe total time it will take to resolve all promises is the total time it will take the longest promise to resolve.\nIn our case, 1000 MS (1 second), we might see a message telling us it took a little bit more then 1000 MS (1001, 1002)\n\nNote: You can see the \"Promise.all\" has the ID #4 which is not the 1st promise to run.\nThis is because the \"ZonePromise\" nodes are not really scoped physically inside #4, they are logically scoped.\nPromise.all is a great example to see how multiple promises work to generate a single value.\n",
+            snip: "function createPromise(timeoutMS, value) {\n    return new Promise(function(resolve, reject) {\n        setTimeout(function() {resolve(value);}, timeoutMS);\n    });\n}\n\nvar arr = [];\narr.push(createPromise(250, 5));\narr.push(createPromise(500, 10));\narr.push(createPromise(750, 15));\narr.push(createPromise(1000, 20));\n\nvar time = new Date();\nPromise.all(arr)\n    .then(function(value) {\n        createPromiseTree(0,null);\n\n        alert(\"It took us \" + (new Date() - time) + \" MS to get here.\");\n\n        var total = 0;\n        value.forEach(function(v) {total += v;})\n        return total;\n    });"
+        },
+        {
+            name: 'Exponential child growth',
+            desc: 'Each node have N+1 children, where N is the node`s level.',
+            snip: "function expoGrowth(p,n, limit) {\n  var arr = [];\n\n  for (var i=0; i<n;i++){\n    arr.push(\n        (n % 2 == 0) ? p.then(function(v){throw Error}) : p.catch(function(err){})\n    );\n  }\n\n  if (n<limit) {\n    for(var i=0; i<arr.length; i++){\n      expoGrowth(arr[i], n+1, limit);\n    }\n  }\n}\n\nexpoGrowth(Promise.resolve(0), 2, 4);\ncreatePromiseTree(400,null);"
+        },
+        {
+            name: 'Advanced',
+            desc: 'l.',
+            snip: "function getNumberPromise(num, ms) {\n  return new Promise(function(res,rej){\n    var count = 0;\n    for (var i=0; i<5; i++) {\n      var p = new Promise(function(res1, rej1){\n        setTimeout(function(){\n          new Promise(function(res2, rej2){\n            res2(num);\n\n          }).then(function(val){\n              res1(num);\n            });\n        }, ms/2);\n      });\n      p.then(function(val){\n        setTimeout(function(){\n          count++;\n          if (count == 5) {\n            res(val);\n          }\n\n        }, ms/2);\n      })\n        .catch(function(err){\n          rej(err);\n        });\n    }\n  });\n}\n\nvar prm = new Promise(function(res,rej){\n  setTimeout(function(){res(15);}, 100);\n});\n\nprm.catch(function(err){});\n\nvar pTest = prm.then(function(v){\n  return getNumberPromise(v, 1000)\n    .then(function(v){return 9999;});\n});\n\npTest.then(function(v) {return v+1;});\npTest.then(function(v) {return getNumberPromise(v, 50);});\n\nprm\n  .then(function(v) {return v-1;})\n  .then(function(v) {return v*2;})\n  .then(function(v) {throw new Error(\"XYZ\");})\n  .then(function(v) {console.log(\"THEN BEFORE: \", v);})\n  .catch(function(v) {\n    console.log(\"ERROR: \",v);\n  })\n  .then(function(v) {console.log(\"THEN AFTER: \", v);});\n\nprm\n  .then(function(v) {return v+1;})\n  .then(function(v) {return v/2;})\n  .then(function(v) {throw new Error(\"XYZ\");})\n  .then(function(v) {console.log(\"THEN BEFORE: \", v);})\n  .catch(function(v) {\n    console.log(\"ERROR: \",v);\n  })\n  .then(function(v) {console.log(\"THEN AFTER: \", v);});\n\ncreatePromiseTree(1500,null);"
+        }
+    ];
+    app.constant('snippets', snippets);
+})(window.angular); // this is temp, just to skip TS config right now, TODO for later...
+//# sourceMappingURL=snippets.js.map

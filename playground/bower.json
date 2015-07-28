@@ -1,0 +1,19 @@
+{
+  "name": "promise-tree-playground",
+  "version": "0.0.0",
+  "authors": [
+    "Shlomi Assaf <shlomiassaf@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-ace": "bower",
+    "angular-local-storage": "~0.2.2"
+  }
+}
