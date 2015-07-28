@@ -194,9 +194,6 @@ function d3ptree() {
             case "Promise":
               return "blue";
               break;
-            case "PromiseFlow":
-              return "YellowGreen";
-              break;
             case "ZonePromise":
               return "Teal";
               break;

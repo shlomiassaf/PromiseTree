@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h1>A visualization tool for JavaScript promises</h1>
+            <span class="lead">A tool for creating a graphical representation of promise chains using the <em><strong>PromiseTree</strong></em> module.</span>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-xs-12">
+            <img class="img-responsive" style="margin: 0 auto;" src="playground.jpg" alt="PromiseTree Visualizer Playground" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <span class="lead">Go to the <a style="cursor: pointer" href="#/playground">Playground</a> to start playing with promises.<br />
+                Click on the <a style="cursor: pointer" ng-click="main.showHelp()">Playground Help</a> to understand what each element represents in the visual tree.</span>
+        </div>
+    </div>
+    <div class="row" style="color: #253741">
+        <h2>How does it work?</h2>
+        <strong>PromiseTree Visualizer</strong> uses the D3 library to convert the output created by the <em><strong>PromiseTree</strong></em> module. <br />
+        The output is an array of objects where each object is the root node of a promise chain, <strong>PromiseTree Visualizer</strong> displays only the first node in the array.
+        <br /><br />
+        The <em><strong>PromiseTree</strong></em> module does all the heavy lifting, tracking all promises and producing a tree like json structure that represents the promise chain.<br />
+        <em><strong>PromiseTree</strong></em> wraps the Promise constructor and some of the Promise instance and static methods, this monkey-patch is used to track and record the data. <br />
+        There are 2 special situations where tracking the chain is limited causing it to break:<br />
+        <ul>
+            <li>Using asynchronous calls</li>
+            <li>Invoking a promise/s within a promise <strong><a tooltip="Function object with two arguments resolve and reject. The first argument fulfills the promise, the second argument rejects it. We can call these functions, once our operation is completed." tooltip-placement="bottom" tooltip-class="info-tooltip-box">executer</a></strong></li>
+        </ul>
+        To workaround the issues, the process uses the invocation tree (arguments, callee, caller) to gain insight to the nearest parent(promise) by wrapping setTimeout and painting asynchronous calls<br />
+        This workaround requires working in <strong>non-strict</strong> mode so remove any <code>'use strict';</code> from your code.<br />
+        If <code>'use strict';</code> is left it will still output the promises but some promises will register as root nodes rather then children of other promises, this will break the chain.
+        <br /> <br /> <br />
+
+        <h2>What can I use it for?</h2>
+        <strong>PromiseTree Visualizer</strong> & <em><strong>PromiseTree</strong></em> can be used for both education and debugging. <br />
+        It should work out of the box in the browser (Chrome), for <strong>NodeJS</strong> it requires little modification.<br />
+        <blockquote><em><strong>PromiseTree</strong></em> is not for production, there is no reason it should ever run on production.</blockquote>
+
+        <br />
+        <h2>What should I do to run <em><strong>PromiseTree</strong></em>  in the browser</h2>
+        <em><strong>PromiseTree</strong></em> requires the code to operate in "non-strict" mode so remove any <code>'use strict';</code> from your code. <br />
+        Current implementation does not wrap setInterval and setImmediate.
+
+        <br /><br /><br />
+        <h2>What should I do to run <em><strong>PromiseTree</strong></em> in NodeJS</h2>
+        NodeJS is special since it uses internal asynchronous callbacks while the browser uses the good old setTimeout API. <br />
+        In the browser there are limited amount of functions that enables asynchronous calls while in NodeJS this is not the case.  <br />
+        To use NodeJS a slight code modification is required, more on that soon...
+
+    </div>
+</div>
+
+

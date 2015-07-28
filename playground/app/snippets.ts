@@ -99,7 +99,45 @@ createPromiseTree(0,null);`
         {
             name: 'Scoped promises.',
             desc:
-`A visual example of "Promise.all".
+`Scoped promises are promises running under the "executor" of a promise.
+They are not necessarily part of the flow but usually they will have an effect on resolving or rejecting in the "executor".
+
+This example creates a new Promise (#0), this promise is resolved by another inner promise inside the "executor".
+A random value is created and a boolean value is set according to that random number,
+if the number is greater then 0.5 the boolean is set to true.
+2 Promises are created, these are "ZonePromie" #1 & #2 and only 1 of them will resolve #0.
+
+Notice that #1 & #2 never resolve, hence they have an "X" as a value.
+Once #0 is resolved, the value is passed to #3 which is a Chained promise marked with a green line.
+It is important to understand that #1 & #2 are NOT part of the chain, they are just under the scope of #0.
+They do help resolving but any other line could resolve #0 and it wouldn't matter.
+`,
+            snip:
+`function executor(resolve, reject) {
+    var isHigh = Math.random() > 0.5;
+
+    var p1 = new Promise(function (res1, rej1) {
+        if (isHigh) resolve("High");
+    });
+
+    var p2 = new Promise(function (res1, rej1) {
+        if (!isHigh) resolve("Low");
+    });
+}
+
+var promise = new Promise(executor);
+promise.then(function(value) {
+    createPromiseTree(0, function(){
+        alert("I got " + value);
+    });
+    return value;
+});
+`
+        },
+        {
+            name: 'Scoped promises with Promise.all()',
+            desc:
+                `A visual example of "Promise.all".
 
 Promise.all is a great example of what PromsieTree defines as "ZonePromise", a promise that runs under the scope of
 another promise.
@@ -119,7 +157,7 @@ This is because the "ZonePromise" nodes are not really scoped physically inside 
 Promise.all is a great example to see how multiple promises work to generate a single value.
 `,
             snip:
-`function createPromise(timeoutMS, value) {
+                `function createPromise(timeoutMS, value) {
     return new Promise(function(resolve, reject) {
         setTimeout(function() {resolve(value);}, timeoutMS);
     });
@@ -145,7 +183,11 @@ Promise.all(arr)
         },
         {
             name: 'Exponential child growth',
-            desc: 'Each node have N+1 children, where N is the node`s level.',
+            desc:
+`Each node have N+1 children, where N is the node's level.
+You can change N by changing the last parameter sent to expoGrowth, don't pass 7 or you browser will freeze :)
+The current N is 4, it will cause the node's to overlap so set the "Scale" to 2.
+If you set N > 4 the Scale will need to be higher as well.`,
             snip:
 `function expoGrowth(p,n, limit) {
   var arr = [];

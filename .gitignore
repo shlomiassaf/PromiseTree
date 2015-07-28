@@ -2,6 +2,7 @@
 ### Yeoman template
 node_modules/
 playground/bower_components/
+.idea/
 *.log
 
 build/
