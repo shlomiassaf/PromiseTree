@@ -21,9 +21,14 @@ Also notice that #1 & #3 are "Then" promises and they both raised an exception.
 #1 has no children, the exception fired by #1 is lost forever.
 #2 is a "Catch" promise, it is a sibling of 1 thus it will never catch an exception from one, what will it catch then?
 Well, #2 will catch a reject call from #0, simple.
+
+Now let's try rejecting from the source, comment out the first line of code and uncomment the line before,
+so the "promise" variable will point to a rejected promise.
+Try to think about the result, run and see if you're right.
 `,
         snip:
 `var promise = Promise.resolve(100);
+//var promise = Promise.reject(100);
 
 promise
     .then(function(v) {
@@ -32,18 +37,16 @@ promise
 
 promise
     .catch(function(err) {
-        alert("I shall not pop up!");
+
     });
 
 promise.then(function(v) {
         throw new Error("I am an error!");
     })
     .catch(function(err) {
-
     });
 
-createPromiseTree(400,null);
-`
+createPromiseTree();`
         },
         {
             name: 'Chained exception handling',
