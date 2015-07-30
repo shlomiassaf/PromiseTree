@@ -9,6 +9,8 @@
         this.surfaceSizeFactor = 1;
         this.surfaceSizes = [1, 2, 5, 10, 25, 50, 100, 250, 500];
         this.selectedSnippet = snippets[0];
+        this.showValues = true;
+        this.showTreeViewSettings = true;
 
         this.snippets = snippets;
 
@@ -73,7 +75,13 @@
         this.createTree = function (ms, cb) {
             var self = this;
             setTimeout(function () {
-                self.jsonTree = JSON.stringify(promiseTree.getD3Tree(), null, '\t');
+                var tree = promiseTree.getD3Tree();
+
+                self.rootNodes = [];
+                for (var i=0; i<tree.length; i++) self.rootNodes.push(i+1);
+                self.selectedRootNode = (self.rootNodes.length) ? 1 : 0;
+
+                self.jsonTree = JSON.stringify(tree, null, '\t');
                 cb && cb();
                 $scope.$digest();
             }, ms);

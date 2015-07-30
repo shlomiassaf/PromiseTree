@@ -54,22 +54,22 @@ createPromiseTree();`
 `A visual example showing how promises work when an exception is raised
 in the middle of the chain, allowing the chain to recover and continue.
 
-This example is a straight chain where once promise provides a value to the next.
-The variable 'shouldIThrow' indicates if #2 should throw and excption or not.
+This example is a straight chain where one promise provides a value to the next.
+The variable 'shouldIThrow' indicates if #2 should throw an exception or not.
 
-Chande 'shouldIThrow' to false, Run the example.
-Once done, switch to "Tree View", you will see an origin Promise with id #0.
+Run the example ('shouldIThrow' should be false).
+Once done, switch to "Tree View", you will see a root Promise with id #0.
 
-If 'shouldIThrow' = false then the process is:
-Get a Value, multiply by 2, devide by 2, return it (should be the same as original value)
+When 'shouldIThrow' = false the process is:
+Get a Value, multiply by 2, divide by 2, return it (should be the same as original value)
 Notice we are skipping #4, we never had an exception so we don't "Catch"...
 
 
-Chande 'shouldIThrow' to true, Run the example.
-Once done, switch to "Tree View", you will see an origin Promise with id #0.
+Now, change 'shouldIThrow' to true, Run the example.
+Once done, switch to "Tree View", you will see a root Promise with id #0.
 
-If 'shouldIThrow' = true then an exception is raised in the middle, breaking
-up the process and returning the value -1.
+When 'shouldIThrow' = true an exception is raised in the middle,
+breaking up the process and returning the value -1.
 Notice that #2 is throwing an exception which cause a jump to the
 next "Catch" in the chain (#4), we skip #3 here, it is never invoked.`,
             snip:
@@ -100,7 +100,7 @@ promise
 createPromiseTree(0,null);`
         },
         {
-            name: 'Scoped promises.',
+            name: 'Scoped promises',
             desc:
 `Scoped promises are promises running under the "executor" of a promise.
 They are not necessarily part of the flow but usually they will have an effect on resolving or rejecting in the "executor".
@@ -185,6 +185,44 @@ Promise.all(arr)
     });`
         },
         {
+            name: 'Using XHR with "fetch"',
+            desc:
+                `A Simple example using the "fetch" library.
+The call is made to the github API, searching for the word "promise".
+The total count is sent to the last promise in the chain that alerts the number of results found.
+See #7 passing the result from github to #2, #2 passes the total count to #3.
+
+Notice that we have a catch promise (#4) that is not the last.
+By setting a "Then" promise as the last promise in the chain we actually treat it as a "finally" like promise.
+
+Comment the first "apiUrl" variable definition, uncomment the 2nd one and run.
+Now the URL is invalid, this will cause an exception that will bubble up.
+By having a "finally" handler we make sure we print the tree anyway!`,
+            snip:
+                `var apiUrl = "https://api.github.com/search/repositories?q=promise&sort=stars&order=desc";
+//var apiUrl = "https://api.gCithub.com/search/repositories?q=promise&sort=stars&order=desc";
+
+fetch(apiUrl)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(value) {
+        return value.total_count;
+    })
+    .then(function(count) {
+        alert("Found " + count + " GitHub repos searching 'promise'");
+
+        return null;
+    }).
+    catch(function(err) {
+        alert('ERROR: ' + err.toString());
+    })
+    .then(function() {
+        createPromiseTree(0,null);
+    });
+    `
+        },
+        {
             name: 'Exponential child growth',
             desc:
 `Each node have N+1 children, where N is the node's level.
@@ -212,8 +250,11 @@ expoGrowth(Promise.resolve(0), 2, 4);
 createPromiseTree(400,null);`
         },
         {
-          name: 'Advanced',
-          desc: 'l.',
+          name: 'Crazy composition',
+          desc: `A random crazy composition of promise stuff...
+try to figure out whats going on.
+
+Make sure the scale is at least at 2, or more if you resolution < 1920x1080`,
           snip:
 `function getNumberPromise(num, ms) {
   return new Promise(function(res,rej){

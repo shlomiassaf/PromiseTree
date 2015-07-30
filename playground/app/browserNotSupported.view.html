@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1 class="text-center">Oops... Browser not supported, please use <a target="_blank" href="https://www.google.com/chrome/browser/index.html">Chrome</a></h1>
+            <br/>
+            <br/>
+            <h3 class="text-center">Wait, What? I have like the newest coolest browser available!</h3>
+            <br/>
+            <br/>
+            <div style="color: #2C3E50">
+                <h3><strong>Short Explanation:</strong></h3>
+                <span class="lead">
+                    To find out the Promise hierarchy, <strong>PromiseTree</strong> needs to do some digging.<br/>
+                    The V8 JavaScript engine in Chrome allows it. (SpiderMonkey in FireFox does not...)</span>
+                <br/>
+                <br/>
+                <h3><strong>Long Explanation:</strong></h3>
+                <span class="lead">
+                    Well, this is related to how JavaScript works...<br/>
+                    Promises are asynchronous by nature, it resolves after an asynchronous call is completed via a callback.<br/>
+                    The Event Loop invokes the callback, this is done when the stack is empty so a callbacks stack has no meaning.<br/>
+                    <br/>
+                    To track hierarchy, <strong>PromiseTree</strong> has to inspect the "caller" of the Promise, where clues are set to identify the hierarchy.
+                    This method requires working in "non-strict" mode, which is fine since <strong>PromiseTree</strong> is for education and/or debug use cases.
+                    Chrome's V8 interperates the 'use string;' instruction in a way that works for <strong>PromiseTree</strong>, FireFox's SpiderMonkey for example interperates it differently so it doesn't work.
+                    (Chrome set strict based upon the callee instructing it, FireFox based upon the caller of the callee instructing it, they are both right).
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

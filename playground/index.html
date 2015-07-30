@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="A tool for creating a graphical/visual representation of javascript promise chains using the PromiseTree module.">
+    <meta name="keywords" content="javascript, promise, es6, visual promise, asynchronous, blog.assaf.co">
+    <meta property="og:title" content="PromiseTree - A JavaScript Promise visualizer" />
+    <meta property="og:description" content="A tool for creating a graphical/visual representation of javascript promise chains using the PromiseTree module." />
+    <meta property="og:image" content="http://shlomiassaf.github.io/promisetree/playground/playground.jpg" />
     <title>PromiseTree - A JavaScript Promise visualizer</title>
 
     <script>
@@ -172,6 +178,7 @@
         }();
     </script>
 
+    <script src="bower_components/bowser/bowser.min.js"></script>
     <script src="../lib/promiseTree.js"></script>
     <script src="http://cdn.jsdelivr.net/ace/1.2.0/min/ace.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -180,7 +187,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-ui-ace/ui-ace.min.js"></script>
     <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
-
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -270,152 +276,6 @@
     </style>
 </head>
 <body ng-app="promiseApp" ng-controller="mainCtrl as main">
-<script type="text/ng-template" id="app/promiseTreeHelp.view.html">
-    <div class="modal-header">
-        <h1 class="modal-title">Playground Help</h1>
-    </div>
-    <div class="modal-body" style="color: #2C3E50">
-        <h2>Javascript code editor pane</h2>
-        <div style="margin-left: 10px">
-            <p> The Javascript code editor pane is located on the <strong>Playground</strong> page on the left side. It allows you to write javascript promise code and see the results on the right pane.</p>
-            <p>You can run your own custom code or use pre defined code examples by selecting an example from the selection box above the top right corner of the editor.</p>
-            <p>Once your code has finished you need to notify it to the visualizer so he can render the graph.
-                This is done by simply calling the function <strong>createPromiseTree(timeoutMS, callback)</strong>.
-                The function has 2 optional parameter:</p>
-            <ul>
-                <li><strong>timeoutMS:</strong> The time to wait, in milliseconds before rendering the tree.</li>
-                <li><strong>callback:</strong> A callback function to invoke once graph is ready.</li>
-            </ul>
-        </div>
-        <p>Currently, <strong><i>PromiseTree Visualizer</i></strong> supports the "fetch" library for invoking XHR request using a promise wrapper. You will need a server that supports CORS requests</p>
-        <h2>Graph pane</h2>
-        <div style="margin-left: 10px">
-            <p>The Graph pane is located on the <strong>Playground</strong> page on the right side.
-                <br />The Graph pane allows you to view the promise structure created by your code in 2 ways:</p>
-            <p><h3>JSON View</h3></p>
-            <div style="margin-left: 5px">
-                <p>
-                    JSON View is the JSON representation of the graph, collection of Promises with thier associated children. <br />
-                    The view will populate automatically once a successful "Run" operation has finished and it is also editable,
-                    so you can change values or paste a JSON graph you created locally on your machine either in NodeJS or in your browser
-                </p>
-            </div>
-            <h3>Tree View</h3>
-            <div style="margin-left: 10px">
-                The "Tree View" is just a graphical representation of the promise tree, it has 2 main building blocks:
-                <ul>
-                    <li><strong>Promise Node:</strong> Represented by a square, a Promise Node is represents a "Promise" in your code.</li>
-                    <li><strong>Link:</strong> Represented by a line, connecting to Promise Node's, a Link is a visual object representing the flow.</li>
-                </ul>
-                <br/>
-                <h4>Tree View Legend</h4>
-                <div style="margin-left: 10px">
-                    The definitions below reffers to the term "<strong>executer</strong>" multiple times, the executer is a function incharge of resolving or rejecting the promise.
-                    Here is the exact definition from the mozilla developer network: <br/>
-                    <blockquote>
-                        Function object with two arguments resolve and reject. The first argument fulfills the promise, the second argument rejects it. We can call these functions, once our operation is completed.
-                    </blockquote>
-
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-promise"><span>Promise</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>Represents a <strong><i>new</i> Promise</strong>, <br />
-                                e.g: <code style="color: black;">var p = new Promise(function(resolve, reject) {// executor ...});</code></span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-then"><span>Then</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>Represents a promise returned by invoking the <strong>Then</strong> function on a Promise instance. ,<br />
-                                e.g: <code style="color: black;">var p = Promise.resolve(100).then(function(value) {});</code></span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-catch"><span>Catch</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>Represents a promise returned by invoking the <strong>Catch</strong> function on a Promise instance. , <br />
-                                e.g: <code style="color: black;">var p = Promise.resolve(100).catch(function(err) {});</code></span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-zone"><span>ZonePromise</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>
-                                Represents a promise that runs under the context of a another promise.<br />
-                                Think about the example given in the <div class="promise-node promise-node-promise"><span>Promise</span></div> description,
-                                A <div class="promise-node promise-node-zone"><span>ZonePromise</span></div> is a new promise created in the scope of the executor.
-                                A ZonePromises does not have to resolve before thier parent resolves.<br />
-                                A Good example is the <strong>Promise.all</strong> & <strong>Promise.race</strong> promise helpers, Promise.all will resolve once all of his children will resolve, Promise.race will resolve on the first resolve event of his children. </span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-promise promise-node-raised"><span>Promise</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>
-                                Represents <div class="promise-node promise-node-promise promise-node-raised"><span>Promise</span></div> or a <div class="promise-node promise-node-zone promise-node-raised"><span>ZonePromise</span></div>
-                                that <strong>rejected</strong> or a <div class="promise-node promise-node-then promise-node-raised"><span>Then</span></div> that throw an error.
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <div class="promise-node promise-node-not-invoked"><span>XXXXXX</span></div>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>
-                                Represents any type of promise that didn't invoke. <br />
-                                For <div class="promise-node promise-node-then"><span>Then</span></div> it means that the function supplied never invoked.
-                                For <div class="promise-node promise-node-catch"><span>Catch</span></div> it means that no exception occured.
-                                By definition <div class="promise-node promise-node-promise"><span>Promise</span></div> & <div class="promise-node promise-node-zone"><span>ZonePromise</span></div> invoke immediately.
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <span style="font-weight: 700"><span style="color:green">Green</span>/<span style="color:red">Red</span> Links</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>
-                                Represents a flow from a promise to its successor, the color is set according to the successor.<br/>
-                                <strong>Flow:</strong> A Green/Red link describes a flow from the left (parent) to the right (child/successor), i.e: A value or an Exception resolved from the left moved to hanndling on the right.
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row legend-row">
-                        <div class="col-xs-4 col-sm-3 col-lg-2">
-                            <span style="font-weight: 700"><span style="color: blue">Blue</span> Links</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-9 col-lg-10">
-                            <span>
-                                Represents a connection between a Promise and promise/s (a.k.a: step-children) called in it's executor scope.
-                                The step-children can be called from the direct scope of the executor or any scope of invoked functions down the stack.<br />
-                                The flow in this situation is opposite to the flow of a Green/Red link and goes from the right to the left.<br /><br />
-                                This is not a physical connection/flow rather then a conceptual one, The Parent promise resolve according to the logic defined in its executor.
-                                The logic can take into consideration some, all or none of the step-children promise's it invoked in the process.
-                                So the resolved (or rejected) value might or might not involve resolved (or rejected) values from its step-children.
-
-                            </span>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-success" ng-click="$close()">OK</button>
-    </div>
-</script>
 <div class="container-fluid" style="margin: 10px; box-sizing: border-box">
     <div class="container">
         <div class="row">
@@ -426,8 +286,6 @@
                 <ul class="list-inline pt-menu">
                     <li><a href="#/home">Home</a></li>
                     <li><a href="#/playground">Playground</a></li>
-                    <li><a href="#/browser">Browser</a></li>
-                    <li><a href="#/nodejs">NodeJS</a></li>
                     <li><a ng-click="main.showHelp()">Playground Help</a></li>
                 </ul>
             </div>

@@ -34,6 +34,32 @@
     </div>
     <div class="col-xs-12 col-md-6">
         <div ng-if="!vm.showJsonGraph" style="position: absolute; right: 0; margin-right: 15px; margin-top: 5px">
+            <button class="btn btn-success" ng-click="vm.showTreeViewSettings = !vm.showTreeViewSettings">{{ (vm.showTreeViewSettings) ? 'Hide' : 'Show'}} Settings</button>
+        </div>
+
+        <tabset style="margin-bottom: 15px;">
+            <tab heading="JSON View" select="vm.resize(); vm.showJsonGraph = !vm.showJsonGraph"></tab>
+            <tab heading="Tree View" select="vm.resize(); vm.showJsonGraph = !vm.showJsonGraph"></tab>
+        </tabset>
+
+        <div ng-if="!vm.showJsonGraph && vm.showTreeViewSettings" style="position: absolute; right: 0; margin-right: 25px; margin-top: 15px">
+            <label>
+                Show values
+                <input type="checkbox" ng-model="vm.showValues" />
+            </label>
+            &nbsp;&nbsp;&nbsp;
+            <i tooltip="Sets the root node to display."
+               tooltip-placement="left"
+               tooltip-class="info-tooltip-box"
+               class="fa fa-info-circle info-tooltip"></i>
+            <span><strong>Root Node:</strong></span>
+
+            <select class="form-control"
+                    style="width: 75px; display: inline-block"
+                    ng-model="vm.selectedRootNode"
+                    ng-options="ssf for ssf in vm.rootNodes"></select>
+
+            &nbsp;&nbsp;&nbsp;
             <i tooltip="A Factor for the canvas size, set to a higher number when the nodes overlap each other. (When you have a big graph)"
                tooltip-placement="left"
                tooltip-class="info-tooltip-box"
@@ -44,12 +70,8 @@
                     style="width: 75px; display: inline-block"
                     ng-model="vm.surfaceSizeFactor"
                     ng-options="ssf for ssf in vm.surfaceSizes"></select>
-        </div>
 
-        <tabset style="margin-bottom: 15px;">
-            <tab heading="JSON View" select="vm.resize(); vm.showJsonGraph = !vm.showJsonGraph"></tab>
-            <tab heading="Tree View" select="vm.resize(); vm.showJsonGraph = !vm.showJsonGraph"></tab>
-        </tabset>
+        </div>
 
         <div class="result-box-container">
             <div ng-if="vm.showJsonGraph"
@@ -61,6 +83,8 @@
                      update-trigger="vm.updateTrigger"
                      style="height: 100%; width: 100%;"
                      surface-size-factor="vm.surfaceSizeFactor"
+                     root-node-index="vm.selectedRootNode -1"
+                     show-values="vm.showValues"
                      json-tree="vm.jsonTree">
             </d3ptree>
         </div>

@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "angular-ui-ace": "bower",
-    "angular-local-storage": "~0.2.2"
+    "angular-local-storage": "~0.2.2",
+    "bowser": "ded/bowser#~1.0.0"
   }
 }

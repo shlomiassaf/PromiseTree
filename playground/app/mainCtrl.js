@@ -15,5 +15,5 @@
         };
     }
 
-    MainCtrl.$inject = ['$scope', '$modal'];
+    MainCtrl.$inject = ['$scope', '$modal', 'browserSupport'];
 })();
