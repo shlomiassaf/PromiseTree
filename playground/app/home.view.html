@@ -21,7 +21,7 @@
     <div class="row" style="color: #253741">
         <h2>How does it work?</h2>
         <strong>PromiseTree Visualizer</strong> uses the D3 library to convert the output created by the <em><strong>PromiseTree</strong></em> module. <br />
-        The output is an array of objects where each object is the root node of a promise chain, <strong>PromiseTree Visualizer</strong> displays only the first node in the array.
+        The output is an array of objects where each object is the root node of a promise chain.
         <br /><br />
         The <em><strong>PromiseTree</strong></em> module does all the heavy lifting, tracking all promises and producing a tree like json structure that represents the promise chain.<br />
         <em><strong>PromiseTree</strong></em> wraps the Promise constructor and some of the Promise instance and static methods, this monkey-patch is used to track and record the data. <br />
@@ -30,14 +30,15 @@
             <li>Using asynchronous calls</li>
             <li>Invoking a promise/s within a promise <strong><a tooltip="Function object with two arguments resolve and reject. The first argument fulfills the promise, the second argument rejects it. We can call these functions, once our operation is completed." tooltip-placement="bottom" tooltip-class="info-tooltip-box">executer</a></strong></li>
         </ul>
-        To workaround the issues, the process uses the invocation tree (arguments, callee, caller) to gain insight to the nearest parent(promise) by wrapping setTimeout and painting asynchronous calls<br />
+        To workaround the issues, the process uses the invocation tree (arguments, callee, caller) to gain insight to the nearest parent(promise) by wrapping setTimeout and painting asynchronous calls.
         This workaround requires working in <strong>non-strict</strong> mode so remove any <code>'use strict';</code> from your code.<br />
         If <code>'use strict';</code> is left it will still output the promises but some promises will register as root nodes rather then children of other promises, this will break the chain.
-        <br /> <br /> <br />
-
+        <br /> <br />
+        <blockquote>Coding in "non-strict" mode is not recommended, it is not secure. This is why PromiseTree is for educational / debug purpose.</blockquote>
+        <br />
         <h2>What can I use it for?</h2>
         <strong>PromiseTree Visualizer</strong> & <em><strong>PromiseTree</strong></em> can be used for both education and debugging. <br />
-        It should work out of the box in the browser (Chrome), for <strong>NodeJS</strong> it requires little modification.<br />
+        It should work out of the box in the browser (Chrome), for <strong>NodeJS</strong> it requires little modification.<br /><br />
         <blockquote><em><strong>PromiseTree</strong></em> is not for production, there is no reason it should ever run on production.</blockquote>
 
         <br />

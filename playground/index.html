@@ -11,6 +11,10 @@
     <title>PromiseTree - A JavaScript Promise visualizer</title>
 
     <script>
+        // "fetch" has an internal implementation in V8 and an API exposing that implementation via window.fetch
+        // this is true for Promise as well, this means fetch will call the internal Promise in V8 rather then the reference in window.Promise
+        // So, the outcome is that fetch will not play nicely with PromiseTree.
+        // To use fetch with PromiseTree we need to use the javascript version, which of course use window.Promise
         fetch = undefined;
         !function () {
             "use strict";
@@ -188,112 +192,45 @@
     <script src="bower_components/angular-ui-ace/ui-ace.min.js"></script>
     <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
 
+
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-
-    <style>
-        body {
-            color: #1ABC9C;
-        }
-        .btn {
-            border-radius: 0;
-        }
-        .btn-success {
-            background-color: #1ABC9C;
-        }
-
-        .btn-success:hover {
-            background-color: #16A085;
-        }
-
-        .pt-header {
-            color: #1ABC9C;
-            font-weight: 900;
-        }
-        .pt-menu {
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-        .pt-menu li {
-            line-height: 39px;
-            margin: 10px 10px;
-        }
-
-        .pt-menu li a {
-            cursor: pointer;
-        }
-
-        .action-box-container, .result-box-container {
-            border: 1px solid gray;
-        }
-        .info-tooltip {
-            color: #2980B9;
-            cursor: help;
-        }
-        .tooltip.info-tooltip-box .tooltip-inner{
-            background-color: #2980B9;
-            color: #FFFFFF;
-            font-size: 1.25em;
-        }
-        .tooltip.info-tooltip-box .tooltip-arrow {
-            background-color: #2980B9;
-        }
-
-        .promise-node {
-            display: inline-block;
-            color: #ffffff;
-            border-radius: 5px;
-            padding: 5px;
-            font-weight: bold;
-        }
-
-        .legend-row {
-            margin-bottom: 20px;
-            padding: 10px;
-        }
-        .promise-node.promise-node-promise {
-            background-color: blue;
-        }
-        .promise-node.promise-node-then {
-            background-color: green;
-        }
-        .promise-node.promise-node-catch {
-            background-color: red;
-        }
-        .promise-node.promise-node-zone {
-            background-color: Teal;
-        }
-        .promise-node.promise-node-not-invoked {
-            background-color: lightgray;
-        }
-        .promise-node.promise-node-raised {
-            border-style: solid;
-            border-color: red;
-            border-width: 2px;
-        }
-
-
-    </style>
+    <link href="app.css" rel="stylesheet">
 </head>
 <body ng-app="promiseApp" ng-controller="mainCtrl as main">
-<div class="container-fluid" style="margin: 10px; box-sizing: border-box">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-4">
-                <h1 class="pt-header">PromiseTree Visualizer</h1>
-            </div>
-            <div class="col-xs-12 col-sm-8">
-                <ul class="list-inline pt-menu">
-                    <li><a href="#/home">Home</a></li>
-                    <li><a href="#/playground">Playground</a></li>
-                    <li><a ng-click="main.showHelp()">Playground Help</a></li>
-                </ul>
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId=595951577215346";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+    <div class="container-fluid" style="margin: 10px; box-sizing: border-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    <h1 class="pt-header">PromiseTree Visualizer</h1>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <ul class="list-inline pt-menu">
+                        <li><a href="#/home">Home</a></li>
+                        <li><a href="#/playground">Playground</a></li>
+                        <li><a ng-click="main.showHelp()">Playground Help</a></li>
+                        <li><a href="https://github.com/shlomiassaf/PromiseTree" target="_blank"><i class="fa fa-github fa-2x"></i></a></li>
+                    </ul>
+                    <div class="pull-right">
+                        <div class="fb-like" data-href="http://shlomiassaf.github.io/PromiseTree/playground" data-width="100" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+
+                    </div>
+                </div>
             </div>
         </div>
+        <hr>
+        <ng-view></ng-view>
     </div>
-    <hr>
-    <ng-view></ng-view>
-
     <script src="app/app.js"></script>
     <script src="app/snippets.js"></script>
     <script src="app/utilsSvc.js"></script>
