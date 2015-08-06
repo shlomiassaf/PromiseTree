@@ -20,6 +20,7 @@
             this.alerts.splice(index, 1);
         };
 
+
         this.resize = function () {
             var docHeight = utilsSvc.docHeight();
             var maxH = -1;
@@ -29,6 +30,7 @@
                 maxH = Math.max(maxH, h);
             });
 
+            this.boxSize = maxH;
             Array.prototype.forEach.call(document.querySelectorAll('.result-box-container'), function (el) {
                 el.style.height = maxH + "px";
             });
@@ -86,6 +88,43 @@
                 $scope.$digest();
             }, ms);
         };
+
+        $scope.$on('hoverNodeIn', function(evet, data) {
+            var valueType;
+            switch (parseInt(data.valueType)) {
+                case 0:
+                    valueType = "Not Resolved"
+                    break;
+                case 1:
+                    valueType = "Resolve"
+                    break;
+                case 2:
+                    valueType = "Reject"
+                    break;
+                case 5:
+                    valueType = "Promise ID"
+                    break;
+                case 6:
+                    valueType = "Promise ID"
+                    break;
+            }
+
+            this.nodeOnView = JSON.stringify( {
+                id: data.name,
+                startTime: data.startTime,
+                endTime: data.endTime,
+                invoked: data.invoked,
+                value: data.value,
+                valueType: valueType,
+                stack: data.calledFrom
+            } , null, '\t' );
+            $scope.$digest(); // not good but does the trick for now
+        }.bind(this));
+
+        $scope.$on('hoverNodeOut', function(evet, data) {
+            this.nodeOnView = null;
+            $scope.$digest(); // not good but does the trick for now
+        }.bind(this));
 
         this.resize();
     }

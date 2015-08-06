@@ -138,7 +138,7 @@ function d3ptree() {
             centerNode(graphRoot);
         }
 
-        function update(source) {
+        function update(source) { //TODO: Clean up this mess of a function
 
             // Compute the new tree layout.
             var nodes = tree.nodes(graphRoot).reverse(),
@@ -168,7 +168,9 @@ function d3ptree() {
                 .attr("transform", function (d) {
                     return "translate(" + source.y0 + "," + source.x0 + ")";
                 })
-                .on("click", click);
+                .on("click", click)
+                .on("mouseenter", mouseEnter)
+                .on("mouseleave", mouseLeave);
 
             nodeEnter
                 .append("text")
@@ -354,7 +356,12 @@ function d3ptree() {
             update(d);
             centerNode(d);
         }
-
+        function mouseEnter(d) {
+            scope.$emit('hoverNodeIn', d);
+        }
+        function mouseLeave(d) {
+            scope.$emit('hoverNodeOut', d);
+        }
         init(scope.jsonTree);
     }
 

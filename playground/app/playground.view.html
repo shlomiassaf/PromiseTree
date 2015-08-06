@@ -26,8 +26,11 @@
                        type="{{::alert.type}}"
                        close="vm.closeAlert($index)">{{alert.msg}}
                 </alert>
-                <div class="action-box-container">
+                <div class="action-box-container" ng-hide="vm.nodeOnView">
                     <div ui-ace="{mode: 'javascript'}" ng-model="vm.code" style="height:100%;width: 100%;"></div>
+                </div>
+                <div ng-if="vm.nodeOnView" style="height: {{vm.boxSize}}px;" >
+                    <div ui-ace="{mode: 'json'}" ng-model="vm.nodeOnView" style="height:100%;width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -88,6 +91,7 @@
                      json-tree="vm.jsonTree">
             </d3ptree>
         </div>
-
+        <span style="color: darkgray">Use wheel or double-tap to zoom in. Hover over a node to see it's data on the "code view"</span>
     </div>
+
 </div>
