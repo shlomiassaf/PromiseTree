@@ -1,0 +1,26 @@
+{
+  "name": "bowser",
+  "description": "a browser detector",
+  "keywords": [
+    "ender",
+    "browser",
+    "sniff",
+    "detection"
+  ],
+  "version": "1.0.0",
+  "homepage": "https://github.com/ded/bowser",
+  "author": "Dustin Diaz <dustin@dustindiaz.com> (http://dustindiaz.com)",
+  "main": "bowser.js",
+  "scripts": [
+    "bowser.js"
+  ],
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.0",
+    "commit": "01e845506330d06bcd3feb27d94fa7b3f97c5e96"
+  },
+  "_source": "git://github.com/ded/bowser.git",
+  "_target": "~1.0.0",
+  "_originalSource": "ded/bowser"
+}
