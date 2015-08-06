@@ -1,0 +1,79 @@
+body {
+    color: #1ABC9C;
+}
+.btn {
+    border-radius: 0;
+}
+.btn-success {
+    background-color: #1ABC9C;
+}
+
+.btn-success:hover {
+    background-color: #16A085;
+}
+
+.pt-header {
+    color: #1ABC9C;
+    font-weight: 900;
+}
+.pt-menu {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.pt-menu li {
+    line-height: 39px;
+    margin: 10px 10px;
+}
+
+.pt-menu li a {
+    cursor: pointer;
+}
+
+.action-box-container, .result-box-container {
+    border: 1px solid gray;
+}
+.info-tooltip {
+    color: #2980B9;
+    cursor: help;
+}
+.tooltip.info-tooltip-box .tooltip-inner{
+    background-color: #2980B9;
+    color: #FFFFFF;
+    font-size: 1.25em;
+}
+.tooltip.info-tooltip-box .tooltip-arrow {
+    background-color: #2980B9;
+}
+
+.promise-node {
+    display: inline-block;
+    color: #ffffff;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.legend-row {
+    margin-bottom: 20px;
+    padding: 10px;
+}
+.promise-node.promise-node-promise {
+    background-color: blue;
+}
+.promise-node.promise-node-then {
+    background-color: green;
+}
+.promise-node.promise-node-catch {
+    background-color: red;
+}
+.promise-node.promise-node-zone {
+    background-color: Teal;
+}
+.promise-node.promise-node-not-invoked {
+    background-color: lightgray;
+}
+.promise-node.promise-node-raised {
+    border-style: solid;
+    border-color: red;
+    border-width: 2px;
+}
