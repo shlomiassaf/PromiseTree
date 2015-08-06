@@ -185,6 +185,29 @@ Promise.all(arr)
     });`
         },
         {
+            name: 'Multiple root nodes',
+            desc:
+                `A simple example of multiple root nodes.
+After running, the "Root Node" combobox should hold 3 roots.
+This is because we invoke the function "randomProimise()" 3 times.
+Each time, it creates a new promise, the promises are not chained,
+non run within another... they have no relation binding them, each is a root.`,
+            snip:
+                `function randomPromise() {
+    Promise.resolve(Math.floor(Math.random() * 100))
+    .then(function(val) {
+        return val/2;
+    });
+}
+
+randomPromise();
+randomPromise();
+randomPromise();
+
+createPromiseTree(200);
+`
+        },
+        {
             name: 'Using XHR with "fetch"',
             desc:
                 `A Simple example using the "fetch" library.
