@@ -4,7 +4,8 @@
     app.controller('playgroundCtrl', PlaygroundCtrl);
 
     function PlaygroundCtrl($scope, $timeout, utilsSvc, snippets) {
-        this.code = "var prm = new Promise(function(res,rej){setTimeout(function(){res(15);}, 100);}); \n\ncreatePromiseTree(400);";
+        this.code = "// Write promise code here or use one of the examples...\n\n";
+        this.code += "// Thinking of a cool example in mind? Post a PR or open an ISSUE on GITHUB and I will add it";
         this.jsonTree = "";
         this.surfaceSizeFactor = 1;
         this.surfaceSizes = [1, 2, 5, 10, 25, 50, 100, 250, 500];
