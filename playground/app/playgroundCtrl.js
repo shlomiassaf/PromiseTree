@@ -1,4 +1,5 @@
 (function () {
+
     var app = angular.module('promiseApp');
 
     app.controller('playgroundCtrl', PlaygroundCtrl);
@@ -54,7 +55,6 @@
 
         this.runCode = function () {
             if (!this.code) return;
-
             promiseTree.reset();
             try {
                 (new Function("with(this) { " + this.code + "}"))
@@ -71,8 +71,6 @@
                     idx > -1 && self.closeAlert(idx)
                 }, 6000, true, this, alert);
             }
-
-
         };
 
         this.createTree = function (ms, cb) {
