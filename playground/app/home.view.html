@@ -30,27 +30,48 @@
             <li>Using asynchronous calls</li>
             <li>Invoking a promise/s within a promise <strong><a tooltip="Function object with two arguments resolve and reject. The first argument fulfills the promise, the second argument rejects it. We can call these functions, once our operation is completed." tooltip-placement="bottom" tooltip-class="info-tooltip-box">executer</a></strong></li>
         </ul>
-        To workaround the issues, the process uses the invocation tree (arguments, callee, caller) to gain insight to the nearest parent(promise) by wrapping setTimeout and painting asynchronous calls.
-        This workaround requires working in <strong>non-strict</strong> mode so remove any <code>'use strict';</code> from your code.<br />
+        To workaround the issues, the process uses the invocation tree (caller) to gain insight to the nearest parent(promise) by wrapping async APIs and painting asynchronous calls.
+        This workaround requires working in <strong>non-strict</strong> mode, this applies to functions with <code>'use strict';</code> inside them.<br />
         If <code>'use strict';</code> is left it will still output the promises but some promises will register as root nodes rather then children of other promises, this will break the chain.
         <br /> <br />
         <blockquote>Coding in "non-strict" mode is not recommended, it is not secure. This is why PromiseTree is for educational / debug purpose.</blockquote>
         <br />
         <h2>What can I use it for?</h2>
         <strong>PromiseTree Visualizer</strong> & <em><strong>PromiseTree</strong></em> can be used for both education and debugging. <br />
-        It should work out of the box in the browser (Chrome), for <strong>NodeJS</strong> it requires little modification.<br /><br />
+        It should work out of the box in the browser (Chrome) and NodeJS.<br /><br />
         <blockquote><em><strong>PromiseTree</strong></em> is not for production, there is no reason it should ever run on production.</blockquote>
 
         <br />
-        <h2>What should I do to run <em><strong>PromiseTree</strong></em>  in the browser</h2>
-        <em><strong>PromiseTree</strong></em> requires the code to operate in "non-strict" mode so remove any <code>'use strict';</code> from your code. <br />
-        Current implementation does not wrap setInterval and setImmediate.
+        <h2>What should I do to run <em><strong>PromiseTree</strong></em> in the browser</h2>
+        <em><strong>PromiseTree</strong></em> requires the code to operate in "non-strict" mode so remove any <code>'use strict';</code> from your code, where it is defined inside a directed promise related function. <br />
+        <code>
+            &lt;script src="//shlomiassaf.github.io/PromiseTree/lib/promiseTree.js"&lt;/script&gt; <br />
+            &lt;script&gt;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;promiseTree.init(); // or in any other place in your code...<br />
+            &lt;/script&gt;<br />
+        </code>
+        <br />
+        If you are planning to use <strong>fetch</strong> please note that it requires using the JS version not the native one. <br />
+        Because fetch is internal it will also call the internal Promise reference thus skipping <strong>PromiseTree</strong>
+        The workaround is easy to implement:<br />
+        <code>
+            &lt;script&gt;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;fetch = undefined;<br />
+            &lt;/script&gt;<br />
+            &lt;script src="//cdnjs.cloudflare.com/ajax/libs/fetch/0.9.0/fetch.min.js"&lt;/script&gt; <br />
+        </code>
 
         <br /><br /><br />
         <h2>What should I do to run <em><strong>PromiseTree</strong></em> in NodeJS</h2>
-        NodeJS is special since it uses internal asynchronous callbacks while the browser uses the good old setTimeout API. <br />
-        In the browser there are limited amount of functions that enables asynchronous calls while in NodeJS this is not the case.  <br />
-        To use NodeJS a slight code modification is required, more on that soon...
+        Same as Browser with support to <strong>Event Emitter, fs, Timers & nextTick</strong>.<br />
+        <code>
+            var promiseTree = require("./lib/promiseTree");<br />
+            promiseTree.init(); // or in any other place in your code...<br />
+        </code>
+
+
+        <br /><br />
+        <span class="lead">You can download "lib/promiseTree.js" from the GitHub repo.</span>
 
     </div>
 </div>
